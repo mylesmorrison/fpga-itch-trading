@@ -1,0 +1,37 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# Market data (too large for GitHub, see README)
+data/
+
+# Simulation output
+*.vcd
+*.fst
+*.ghw
+*.vvp
+obj_dir/
+sim_build/
+results.xml
+
+# Vivado
+.Xil/
+*.jou
+*.log
+*.str
+*.cache/
+*.hw/
+*.runs/
+*.sim/
+*.ip_user_files/
