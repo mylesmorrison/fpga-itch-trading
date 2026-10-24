@@ -37,7 +37,7 @@ module tb_parser;
   itch_parser dut (
     .clk(clk), .rst_n(rst_n),
     .in_data(data), .in_valid(valid), .in_ready(ready),
-    .msg_valid(msg_valid),
+    .msg_valid(msg_valid), .out_ready(1'b1),
     .msg_type(msg_type), .timestamp(timestamp), .order_ref(order_ref),
     .side(side), .shares(shares), .stock(stock), .price(price),
     .match_num(match_num), .display(display), .event_code(event_code)

@@ -1,8 +1,9 @@
 // ITCH binary parser (synthesizable)
 //
 // Input:  length-prefixed byte stream on a valid/ready interface.
-// Output: one decoded message at a time. msg_valid pulses high for one
-//         clock cycle when all the output fields hold a complete message.
+// Output: one decoded message at a time on a valid/ready interface.
+//         msg_valid stays high (and the fields stay put) until the next
+//         stage takes the message with out_ready.
 //
 // Fields that a message type doesn't have are output as 0.
 
@@ -17,6 +18,7 @@ module itch_parser (
 
   // decoded message out
   output logic        msg_valid,
+  input  logic        out_ready,    // next stage can take the message
   output logic [7:0]  msg_type,     // ASCII: S, A, E, X, P
   output logic [31:0] timestamp,    // ms since midnight
   output logic [31:0] order_ref,
@@ -42,8 +44,9 @@ module itch_parser (
   logic [7:0] body [0:27];          // the body bytes
   logic       body_done;            // high for one cycle after the last body byte
 
-  // This parser can always accept a byte
-  assign in_ready = 1'b1;
+  // Accept bytes unless a decoded message is waiting and the next
+  // stage isn't taking it this cycle (backpressure).
+  assign in_ready = !msg_valid || out_ready;
 
   always_ff @(posedge clk) begin
     if (!rst_n) begin
@@ -85,7 +88,10 @@ module itch_parser (
     if (!rst_n) begin
       msg_valid <= 1'b0;
     end else begin
-      msg_valid <= body_done;
+      if (body_done)
+        msg_valid <= 1'b1;          // new message ready
+      else if (out_ready)
+        msg_valid <= 1'b0;          // the next stage took it
 
       if (body_done) begin
         // common to every type

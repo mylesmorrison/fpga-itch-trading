@@ -13,10 +13,14 @@ venv/
 .vscode/
 *.swp
 
-# Market data (too large for GitHub, see README)
-data/
+# Market data: the full day is too large for GitHub (see README).
+# data/sample.* is the small slice the testbenches use, so it stays tracked.
+data/*
+!data/sample.txt
+!data/sample.bin
 
 # Simulation output
+sim/*_out.txt
 *.vcd
 *.fst
 *.ghw
